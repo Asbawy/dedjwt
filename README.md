@@ -1,5 +1,5 @@
 # DEDJWT : JWT Bruter
-
+[![Photo](https://i.imgur.com/8U7Vjyb.png)](photo)
 A script to brute force JWT tokens. It loads passwords from a list and attempts to decode the JWT token with each password. If the token is decoded successfully, the password is saved and the script exits.
 
 ## Feature
