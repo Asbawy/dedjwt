@@ -15,7 +15,7 @@ A script to brute force JWT tokens. It loads passwords from a list and attempts 
 1. Clone the repository or download the script.
 2. Install the required Python libraries using `pip`:
 ```bash
-pip install jwt pytz colorama psutil tqdm
+pip install PyJWT pytz colorama psutil tqdm
 ```
 3. Run the script:
 ```bash
