@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/bin/env python3
 import jwt
 import time
 from colorama import Fore
@@ -32,8 +32,11 @@ def load_passwords(password_list):
         with open(password_list, 'rb') as file:
             return [line.strip().decode('latin-1') for line in file]
     except FileNotFoundError:
-        return []
-
+        print(Fore.RED + "[-] Password list file not found, Exiting.")
+        sys.exit(1)
+    except Exception as e:
+        print(Fore.Red + f"[-] An error occurred while loading passwords: {str(e)}" )
+        sys.exit(1)
 def save_found_password(success, output_file):
     with open(output_file, 'a') as file:
         file.write(success + '\n')
@@ -42,11 +45,18 @@ def main():
     banner = """
     ╔╦╗╔═╗╔╦╗ ╦╦ ╦╔╦╗
      ║║║╣  ║║ ║║║║ ║
-    ═╩╝╚═╝═╩╝╚╝╚╩╝ ╩ v1.1
+    ═╩╝╚═╝═╩╝╚╝╚╩╝ ╩ v1.2
     JWT Bruter by Asbawy
     """
     print(Fore.RED + banner)
     encoded = input(Fore.BLUE + "Enter JWT token: ")
+
+    try:
+        jwt.decode(encoded, options={'verify_signature': False})
+    except jwt.InvalidTokenError:
+        print(Fore.RED + "[-] Invalid JWT token, Exiting.")
+        sys.exit(1)
+
     password_list = input(Fore.BLUE + "Enter the passwords list: ")
     output_file = input(Fore.BLUE + "Enter the output file for found passwords (optional): ")
 
