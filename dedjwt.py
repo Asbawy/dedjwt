@@ -1,10 +1,17 @@
 #!/bin/env python3
 import jwt
 import time
-from colorama import Fore
+from colorama import Fore, Style
 from concurrent.futures import ThreadPoolExecutor
 import psutil
 import sys
+
+Red = Fore.RED
+Green = Fore.GREEN
+Cyan = Fore.CYAN
+Blue = Fore.BLUE
+Bold = Style.BRIGHT
+Reset = Style.RESET_ALL
 
 def brute_force_jwt(encoded, password):
     try:
@@ -32,10 +39,10 @@ def load_passwords(password_list):
         with open(password_list, 'rb') as file:
             return [line.strip().decode('latin-1') for line in file]
     except FileNotFoundError:
-        print(Fore.RED + "[-] Password list file not found, Exiting.")
+        print(f"[{Red}{Bold}ERR{Reset}] Password list file not found, Exiting.")
         sys.exit(1)
     except Exception as e:
-        print(Fore.Red + f"[-] An error occurred while loading passwords: {str(e)}" )
+        print(f"[{Red}{Bold}ERR{Reset}] An error occurred while loading passwords: {str(e)}" )
         sys.exit(1)
 def save_found_password(success, output_file):
     with open(output_file, 'a') as file:
@@ -48,20 +55,20 @@ def main():
     ═╩╝╚═╝═╩╝╚╝╚╩╝ ╩ v1.2
     JWT Bruter by Asbawy
     """
-    print(Fore.RED + banner)
-    encoded = input(Fore.BLUE + "Enter JWT token: ")
+    print(f"{Red}{banner}{Reset}")
+    encoded = input(f"{Blue}[+]{Reset} Enter JWT token: ")
 
     try:
         jwt.decode(encoded, options={'verify_signature': False})
     except jwt.InvalidTokenError:
-        print(Fore.RED + "[-] Invalid JWT token, Exiting.")
+        print(f"[{Red}{Bold}ERR{Reset}] Invalid JWT token, Exiting.")
         sys.exit(1)
 
-    password_list = input(Fore.BLUE + "Enter the passwords list: ")
-    output_file = input(Fore.BLUE + "Enter the output file for found passwords (optional): ")
+    password_list = input(f"{Blue}[+]{Reset} Enter the passwords list: ")
+    output_file = input(f"{Blue}[+]{Reset} Enter the output file for found passwords (optional): ")
 
     passwords = load_passwords(password_list)
-    print(Fore.CYAN+f"[INFO] Starting brute force with {len(passwords)} passwords....")
+    print(f"[{Cyan}{Bold}INFO{Reset}] Starting brute force with {Green}{len(passwords)} passwords{Reset}.")
     start_time = time.time()
     success = None
 
@@ -75,17 +82,17 @@ def main():
                 if output_file:
                     save_found_password(success, output_file)
                 break
-            sys.stdout.write(Fore.CYAN+f"\r[INFO] Passwords tested: {passwords_tested}")
+            sys.stdout.write(f"\r[{Cyan}{Bold}INFO{Reset}] Passwords tested: {Green}{passwords_tested}{Reset}")
             sys.stdout.flush()
 
     if success:
-        print(Fore.GREEN+f"\n[+] Token decoded with the following password: [{success}]")
+        print(f"\n[{Green}DONE{Reset}] Token decoded with the following password: [{Green}{Bold}{success}{Reset}]")
     else:
-        print(Fore.RED+"\n[-] Failed to decode token.")
+        print(f"\n[{Red}{Bold}ERR{Reset}] Failed to decode token.")
 
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(Fore.CYAN+f"[INFO] Elapsed time: {elapsed_time:.2f} seconds")
+    print(f"[{Cyan}INFO{Reset}] Elapsed time: {Bold}{Cyan}{elapsed_time:.2f} seconds{Reset}")
 
 if __name__ == "__main__":
     main()
